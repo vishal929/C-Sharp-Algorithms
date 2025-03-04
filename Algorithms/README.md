@@ -1,0 +1,1 @@
+This project is refreshing myself on some algorithms, but in the flavor of c#

@@ -25,8 +25,8 @@ public class InsertionSort
             {
                 // swap
                 T tmp = list[j];
-                list[j] = list[j+1];
-                list[j] = tmp;
+                list[j] = list[j-1];
+                list[j-1] = tmp;
                 j--;
             } 
         }

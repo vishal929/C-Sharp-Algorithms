@@ -9,48 +9,38 @@ using Xunit.Abstractions;
 
 namespace Sorting.Tests.ComparisonBased;
 
-public class BubbleSortTest
+public class MergeSortTest (ITestOutputHelper helper)
 {
-
-    private ITestOutputHelper output { get; set; }
-    public BubbleSortTest(ITestOutputHelper helper)
-    {
-        output = helper; 
-    }
-
     [Fact]
     public void TestSort()
     {
+        // create an array of size 1000
         int[] test = new int[TestGlobalSize.testArraySize];
 
         int[] testCopy = new int[TestGlobalSize.testArraySize];
 
         for (int i = 0; i < test.Length; i++)
         {
-            test[i] = Random.Shared.Next(int.MinValue,int.MaxValue);
+            test[i] = Random.Shared.Next();
         }
 
         // copy the array to testCopy
         Array.Copy(test, testCopy, test.Length);
 
         // sort both and assert that the result is the same
-
-        // time both operations
-        Stopwatch watch = new Stopwatch();
+        var watch = new Stopwatch();
         watch.Start();
         Array.Sort(testCopy);
         watch.Stop();
 
-        long stdSortMs = watch.ElapsedMilliseconds;
+        long libMs = watch.ElapsedMilliseconds;
 
         watch.Restart();
-        BubbleSort.Sort(test);
+        int[] sorted = MergeSort.SortRecursive(test);
         watch.Stop();
 
-        long ourSortMs = watch.ElapsedMilliseconds;
+        helper.WriteLine($"Merge sort took {watch.ElapsedMilliseconds} ms while lib sort took {libMs}");
 
-        output.WriteLine($"bubble sort took {ourSortMs} ms while library sort took {stdSortMs} ms");
-
-        Assert.Equal(testCopy, test);
+        Assert.Equal(testCopy, sorted);
     }
 }

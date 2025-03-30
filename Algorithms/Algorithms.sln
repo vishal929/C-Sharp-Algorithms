@@ -14,6 +14,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sorting.Tests", "..\Sorting
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataStructures", "..\DataStructures\DataStructures.csproj", "{AE9ACA8C-3E19-4AFA-829C-635BE797DC36}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DivideAndConquer", "DivideAndConquer\DivideAndConquer.csproj", "{175A19DE-B3A8-4332-8EBC-0E695D80E33B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamicProgramming", "DynamicProgramming\DynamicProgramming.csproj", "{A657B93E-2157-49CC-A3AF-744BEF26C32C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -32,6 +36,14 @@ Global
 		{AE9ACA8C-3E19-4AFA-829C-635BE797DC36}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AE9ACA8C-3E19-4AFA-829C-635BE797DC36}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AE9ACA8C-3E19-4AFA-829C-635BE797DC36}.Release|Any CPU.Build.0 = Release|Any CPU
+		{175A19DE-B3A8-4332-8EBC-0E695D80E33B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{175A19DE-B3A8-4332-8EBC-0E695D80E33B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{175A19DE-B3A8-4332-8EBC-0E695D80E33B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{175A19DE-B3A8-4332-8EBC-0E695D80E33B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A657B93E-2157-49CC-A3AF-744BEF26C32C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A657B93E-2157-49CC-A3AF-744BEF26C32C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A657B93E-2157-49CC-A3AF-744BEF26C32C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A657B93E-2157-49CC-A3AF-744BEF26C32C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

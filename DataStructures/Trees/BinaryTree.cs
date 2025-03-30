@@ -10,9 +10,13 @@ namespace DataStructures.Trees;
 /// <summary>
 /// A binary tree is a tree where each node has a left and right child
 /// </summary>
-public class BinaryTree<T> where T : IComparable<T>
+public class BinaryTree<T> : NaryTree<T> where T:IComparable<T>
 {
-    TreeNode<T>? Root { get; set; }
-    
-     
+
+    public static BinaryTree<K> Create<K>(string representation) where K : IComparable<K>
+    {
+        // creates a binary tree from some string representation 
+        // todo
+        return null;
+    } 
 }

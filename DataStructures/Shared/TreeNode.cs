@@ -8,9 +8,10 @@ namespace DataStructures.Shared;
 
 public class TreeNode<T> where T : IComparable<T>
 {
-    TreeNode<T>?[] Children { get; init; }
+    public TreeNode<T>?[] Children { get; init; }
 
-    T Value { get; init;}
+    public T Value { get; init;}
+
     public TreeNode(T value, int numChildren = 2)
     {
         // allocate space for children, unfilled children are null  

@@ -1,4 +1,4 @@
-﻿namespace DynamicProgramming
+﻿namespace Greedy
 {
     public class MaxSubarray
     {
@@ -6,27 +6,24 @@
         {
 
             // can find max subarray in linear time
-            (int bestSum, int bestStart, int bestEnd) bestInfo = (arr[0], 0, 0);
+            (int bestStart, int bestEnd, int bestSum) bestInfo = (0,0,arr[0]);
             int currSum = arr[0];
             int start = 0;
-            int end = 0;
+            int end=0;
             for (int i = 1; i < arr.Length; i++)
             {
-                if (arr[i] >= currSum)
+                if (currSum <= 0)
                 {
-                    // no use keeping the metrics, reset
-                    currSum = arr[i];
+                    // restart since currSum + arr[i] <= arr[i], we would be better by just restarting the subarray
+                    currSum = 0;
                     start = i;
-                    end = i;
-                } else
-                {
-                    end = i;
-                    currSum += arr[i];
                 }
+                end = i;
+                currSum += arr[i];
 
-                if (currSum > bestInfo.bestSum)
+                if (currSum >= bestInfo.bestSum)
                 {
-                    bestInfo = (currSum, start, end);
+                    bestInfo = (start, end, currSum);
                 }
             }
 

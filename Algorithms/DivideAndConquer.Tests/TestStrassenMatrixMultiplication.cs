@@ -13,9 +13,9 @@ public class TestStrassenMatrixMultiplication
     [Fact]
     public void TestStrassenMatrixMultiply()
     {
-        // create some 2 matrices which are powers of 2, assert their multiplications are correct        
-        int[,] first = new int[512, 512];
-        int[,] second = new int[512, 512];
+        // create some 2 matrices of arbitrary length, assert their multiplications are correct        
+        int[,] first = new int[923, 1024];
+        int[,] second = new int[1024, 856];
 
         // fill them with random numbers
         for (int i = 0; i < first.GetLength(0); i++)
@@ -23,13 +23,23 @@ public class TestStrassenMatrixMultiplication
             for (int j = 0; j < first.GetLength(1); j++)
             {
                 first[i, j] = Random.Shared.Next(-5000, 5000);
+            }
+        }
+
+        for (int i = 0; i < second.GetLength(0); i++)
+        {
+            for (int j = 0; j < second.GetLength(1); j++)
+            {
                 second[i, j] = Random.Shared.Next(-5000, 5000);
             }
         }
 
+        int expectedResultRows = first.GetLength(0);
+        int expectedResultCols = second.GetLength(1);
+
         var watch = new Stopwatch();
         watch.Start();
-        int[,] CStrassen = DivideAndConquer.StrassenMatrixMultiplication.StrassenMatrixMultiply(first,(0,first.GetLength(0)-1,0,first.GetLength(0)-1), second , (0,first.GetLength(0) - 1,0,first.GetLength(0) - 1));
+        int[,] CStrassen = DivideAndConquer.StrassenMatrixMultiplication.StrassenMatrixMultiply(first, second);
         watch.Stop();
         helper.WriteLine($"Strassen took {watch.ElapsedMilliseconds} ms");
 
@@ -38,9 +48,12 @@ public class TestStrassenMatrixMultiplication
         watch.Stop();
         helper.WriteLine($"Normal Matrix Multiply took {watch.ElapsedMilliseconds} ms");
 
-        for (int i = 0; i < first.GetLength(0); i++)
+        Assert.Equal(expectedResultRows, CStrassen.GetLength(0));
+        Assert.Equal(expectedResultCols, CStrassen.GetLength(1));
+
+        for (int i = 0; i < expectedResultRows; i++)
         {
-            for (int j = 0; j < first.GetLength(1); j++)
+            for (int j = 0; j < expectedResultCols; j++)
             {
                 Assert.Equal(CStrassen[i, j], CNormal[i, j]);
             }
@@ -50,12 +63,11 @@ public class TestStrassenMatrixMultiplication
 
     private int[,] MatrixMultiply(int[,] matrix, int[,] otherMatrix)
     {
-        // both are nxn matrices
-        int[,] res = new int[matrix.GetLength(0), matrix.GetLength(1)];
+        int[,] res = new int[matrix.GetLength(0), otherMatrix.GetLength(1)];
         
         for (int i = 0; i < res.GetLength(0); i++)
         {
-            for (int j=0;j< matrix.GetLength(1); j++)
+            for (int j=0;j< res.GetLength(1); j++)
             {
                 for (int k = 0; k < matrix.GetLength(1); k++)
                 {

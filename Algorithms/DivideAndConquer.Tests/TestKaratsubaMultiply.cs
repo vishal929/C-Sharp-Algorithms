@@ -18,7 +18,7 @@ public class TestKaratsubaMultiply (ITestOutputHelper helper)
         var xBuilder = new StringBuilder();
         var yBuilder = new StringBuilder();
 
-        for (int i = 0; i < 500; i++)
+        for (int i = 0; i < 1000; i++)
         {
             xBuilder.Append(Random.Shared.Next(1, 9));
             yBuilder.Append(Random.Shared.Next(1, 9));
@@ -42,10 +42,17 @@ public class TestKaratsubaMultiply (ITestOutputHelper helper)
 
         helper.WriteLine($"karatsuba binary multiplication took {watch.ElapsedMilliseconds} ms");
 
+        watch.Restart();
+        BigInteger netMult = x * y;
+        watch.Stop();
+
+        helper.WriteLine($".net binary multiplication took {watch.ElapsedMilliseconds} ms");
+
         BigInteger multVal = StringToBigInteger(mult);
         BigInteger karatVal = StringToBigInteger(karatMult);
 
         Assert.Equal(multVal, karatVal);
+        Assert.Equal(netMult, karatVal);
     }
 
 

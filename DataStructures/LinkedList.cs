@@ -17,13 +17,27 @@ public class LinkedList<T>:IList<T> where T:IComparable<T>
 
     public bool IsReadOnly => throw new NotImplementedException();
 
-    public T this[int index] { get => InternalFindIdx(index).FoundNode!.Val; set => InternalFindIdx(index).FoundNode!.Val=value; }
+    public T this[int index] {
+        get 
+        { 
+            if (index<0 || index >= Count)
+            {
+                throw new IndexOutOfRangeException();
+            }
+            return InternalFindIdx(index).FoundNode!.Val; 
 
-    public void RemoveValue(T val)
-    {
-        // search for the value and delete it
-        Remove(val);
+        }
+        set
+        {
+            if (index<0 || index >= Count)
+            {
+                throw new IndexOutOfRangeException();
+            } 
+            InternalFindIdx(index).FoundNode!.Val = value;
+        }
     }
+
+    // fill this outpublic T this[int index] { get { return 0; } set; }
 
     public void RemoveAt(int index)
     {
@@ -35,12 +49,13 @@ public class LinkedList<T>:IList<T> where T:IComparable<T>
         if (foundInfo.Prev is null)
         {
             // removing the head
-            Head = foundInfo.FoundNode!.Next;
+            Head = Head!.Next;
         }
         else
         {
             foundInfo.Prev.Next = foundInfo.FoundNode!.Next; 
         }
+        Count--;
     }
 
     public int IndexOf(T item)
@@ -88,8 +103,14 @@ public class LinkedList<T>:IList<T> where T:IComparable<T>
 
     public void Add(T item)
     {
-        // insert at the end of the list
+        // insert at the end of the list (O(n))
         Insert(Count, item);
+    }
+
+    public void AddFirst(T item)
+    {
+        // insert at the front of the list (O(1))
+        Insert(0, item);
     }
 
     public void Clear()
@@ -105,7 +126,13 @@ public class LinkedList<T>:IList<T> where T:IComparable<T>
 
     public void CopyTo(T[] array, int arrayIndex)
     {
-        throw new NotImplementedException();
+       ListNode<T>? runner = Head;
+        while (runner != null)
+        {
+            array[arrayIndex] = runner.Val;
+            runner = runner.Next;
+            arrayIndex++;
+        }
     }
 
     public bool Remove(T item)
@@ -116,12 +143,12 @@ public class LinkedList<T>:IList<T> where T:IComparable<T>
         if (foundInfo.Prev is null)
         {
             // removing the head
-            Head = null;
+            Head = Head!.Next;
         }
         else
         {
             // found node wont be null if prev is not null
-            foundInfo.Prev = foundInfo.FoundNode!.Next;
+            foundInfo.Prev.Next = foundInfo.FoundNode!.Next;
 
         }
         Count--;

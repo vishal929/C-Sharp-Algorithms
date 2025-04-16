@@ -26,6 +26,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamicProgramming", "Dynam
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamicProgramming.Tests", "DynamicProgramming.Tests\DynamicProgramming.Tests.csproj", "{B4537F5B-9DFD-4A2A-AF1A-A7C84CCF8724}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataStructures.Tests", "DataStructures.Tests\DataStructures.Tests.csproj", "{05E05F2B-3CC3-46ED-837E-CB34275839D5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -68,6 +70,10 @@ Global
 		{B4537F5B-9DFD-4A2A-AF1A-A7C84CCF8724}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B4537F5B-9DFD-4A2A-AF1A-A7C84CCF8724}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B4537F5B-9DFD-4A2A-AF1A-A7C84CCF8724}.Release|Any CPU.Build.0 = Release|Any CPU
+		{05E05F2B-3CC3-46ED-837E-CB34275839D5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{05E05F2B-3CC3-46ED-837E-CB34275839D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{05E05F2B-3CC3-46ED-837E-CB34275839D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{05E05F2B-3CC3-46ED-837E-CB34275839D5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

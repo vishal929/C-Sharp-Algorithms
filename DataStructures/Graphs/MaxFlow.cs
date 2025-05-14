@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DataStructures.Graphs
 {
-    internal class EdmondsKarp
+    internal class MaxFlow 
     {
     }
 }

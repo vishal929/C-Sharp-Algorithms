@@ -36,6 +36,7 @@ public class DisjointSet
             first.Parent = second;
             if (first.Rank == second.Rank)
             {
+                // since the ranks are the same and first was added as a child of second, we know that there are at most second.Rank+1 children
                 second.Rank++;
             }
         }

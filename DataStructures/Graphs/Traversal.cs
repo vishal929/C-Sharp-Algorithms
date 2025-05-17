@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace DataStructures.Graphs;
 public class Traversal
 {
-    public void DFS(IList<IList<int>> adjList, Action<int> visitAction, Action<int> alreadyVisitedAction)
+    public static void DFS(IList<IList<int>> adjList, Action<int> visitAction, Action<int> alreadyVisitedAction)
     {
         HashSet<int> visited = new();
         for (int i = 0; i < adjList.Count(); i++)
@@ -20,7 +20,7 @@ public class Traversal
         }
     }
 
-    private void DFSHelper(int source, IList<IList<int>> adjList, HashSet<int> visited, Action<int> visitAction, Action<int> alreadyVisitedAction)
+    private static void DFSHelper(int source, IList<IList<int>> adjList, HashSet<int> visited, Action<int> visitAction, Action<int> alreadyVisitedAction)
     {
         Stack<int> s = new();
         s.Push(source);
@@ -48,7 +48,7 @@ public class Traversal
         }
     }
 
-    public void BFS<T>(IList<IList<int>> adjList, Action<int> visitAction, Action<int> alreadyVisitedAction)
+    public static void BFS<T>(IList<IList<int>> adjList, Action<int> visitAction, Action<int> alreadyVisitedAction)
     {
         HashSet<int> visited = new();
         for (int i = 0; i < adjList.Count(); i++)
@@ -60,7 +60,7 @@ public class Traversal
         }
     }
 
-    private void BFSHelper(int source, IList<IList<int>> adjList, HashSet<int> visited, Action<int> visitAction, Action<int> alreadyVisitedAction)
+    private static void BFSHelper(int source, IList<IList<int>> adjList, HashSet<int> visited, Action<int> visitAction, Action<int> alreadyVisitedAction)
     {
         Queue<int> q = new();
         q.Enqueue(source);

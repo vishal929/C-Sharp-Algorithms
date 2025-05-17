@@ -8,26 +8,26 @@ using System.Threading.Tasks;
 namespace DataStructures.Graphs;
 public class Traversal
 {
-    public void DFS<T>(IList<GraphNode<T>> adjList, Action<GraphNode<T>> visitAction, Action<GraphNode<T>> alreadyVisitedAction)
+    public void DFS(IList<IList<int>> adjList, Action<int> visitAction, Action<int> alreadyVisitedAction)
     {
-        HashSet<GraphNode<T>> visited = new HashSet<GraphNode<T>>();
+        HashSet<int> visited = new();
         for (int i = 0; i < adjList.Count(); i++)
         {
-            if (visited.Contains(adjList[i])) continue;
+            if (visited.Contains(i)) continue;
 
             // run DFS
-            DFSHelper<T>(adjList[i], visited, visitAction, alreadyVisitedAction);
+            DFSHelper(i,adjList,visited, visitAction, alreadyVisitedAction);
         }
     }
 
-    private void DFSHelper<T>(GraphNode<T> source, HashSet<GraphNode<T>> visited, Action<GraphNode<T>> visitAction, Action<GraphNode<T>> alreadyVisitedAction)
+    private void DFSHelper(int source, IList<IList<int>> adjList, HashSet<int> visited, Action<int> visitAction, Action<int> alreadyVisitedAction)
     {
-        Stack<GraphNode<T>> s = new();
+        Stack<int> s = new();
         s.Push(source);
 
         while (s.Count > 0)
         {
-            GraphNode<T> toVisit = s.Pop();
+            int toVisit = s.Pop();
             if (visited.Contains(toVisit))
             {
                 alreadyVisitedAction(toVisit);
@@ -38,33 +38,36 @@ public class Traversal
             visitAction(toVisit);
                         
             // push all neighbors
-            foreach (GraphNode<T> neighbor in toVisit.Neighbors)
+            foreach (int neighbor in adjList[toVisit])
             {
                 s.Push(neighbor);
             }
+
+            // set visited
+            visited.Add(toVisit);
         }
     }
 
-    public void BFS<T>(IList<GraphNode<T>> adjList, Action<GraphNode<T>> visitAction, Action<GraphNode<T>> alreadyVisitedAction)
+    public void BFS<T>(IList<IList<int>> adjList, Action<int> visitAction, Action<int> alreadyVisitedAction)
     {
-        HashSet<GraphNode<T>> visited = new HashSet<GraphNode<T>>();
+        HashSet<int> visited = new();
         for (int i = 0; i < adjList.Count(); i++)
         {
-            if (visited.Contains(adjList[i])) continue;
+            if (visited.Contains(i)) continue;
 
-            // run DFS
-            BFSHelper<T>(adjList[i], visited, visitAction, alreadyVisitedAction);
+            // run BFS
+            BFSHelper(i,adjList, visited, visitAction, alreadyVisitedAction);
         }
     }
 
-    private void BFSHelper<T>(GraphNode<T> source, HashSet<GraphNode<T>> visited, Action<GraphNode<T>> visitAction, Action<GraphNode<T>> alreadyVisitedAction)
+    private void BFSHelper(int source, IList<IList<int>> adjList, HashSet<int> visited, Action<int> visitAction, Action<int> alreadyVisitedAction)
     {
-        Queue<GraphNode<T>> q = new();
+        Queue<int> q = new();
         q.Enqueue(source);
 
         while (q.Count > 0)
         {
-            GraphNode<T> toVisit = q.Dequeue();
+            int toVisit = q.Dequeue();
             if (visited.Contains(toVisit))
             {
                 alreadyVisitedAction(toVisit);
@@ -75,10 +78,13 @@ public class Traversal
             visitAction(toVisit);
                         
             // queue all neighbors
-            foreach (GraphNode<T> neighbor in toVisit.Neighbors)
+            foreach (int neighbor in adjList[toVisit])
             {
                 q.Enqueue(neighbor);
             }
+
+            // set visited status
+            visited.Add(toVisit);
         }
     }
 

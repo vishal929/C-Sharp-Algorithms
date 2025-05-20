@@ -30,28 +30,52 @@ public class SingleSourceShortestPaths
             }
         }
         
-        // O(V*E)
-        for (int i = 0; i < adjList.Count-1; i++)
+        // O(V*E) (k is a loop relaxing from 0 to V-1, on the V-th relaxation, we check for cycles)
+        var errBuilder = new StringBuilder();
+        for (int k = 0; k < adjList.Count; k++)
         {
-            if (dist[i] == double.PositiveInfinity) continue;
-
-            for (int j = 0; j < adjList[i].Count; j++)
+            for (int i = 0; i < adjList.Count; i++)
             {
-                int neighbor = adjList[i][j];
+                if (dist[i] == double.PositiveInfinity) continue;
 
-                double weight = weights[i][j];
-
-                double altDist = dist[i] + weight;
-                if (altDist < dist[neighbor])
+                for (int j = 0; j < adjList[i].Count; j++)
                 {
-                    // update
-                    dist[neighbor] = altDist;
-                    prev[neighbor] = i;
+                    int neighbor = adjList[i][j];
+
+                    double weight = weights[i][j];
+
+                    double altDist = dist[i] + weight;
+                    if (altDist < dist[neighbor])
+                    {
+                        // update
+                        dist[neighbor] = altDist;
+                        prev[neighbor] = i;
+
+                        if (k == adjList.Count - 1)
+                        {
+                            // cycle exists
+                            errBuilder.Append("Negative cycle exists: ");
+
+                            bool[] visited = new bool[adjList.Count];
+
+                            int curr = i;
+
+                            while (!visited[curr])
+                            {
+                                errBuilder.Append($"{curr} ");
+                                visited[curr] = true;
+                                curr = prev[curr];
+                            }
+
+                            errBuilder.Append('\n');
+
+                        }
+                    }
                 }
             }
         }
 
-        // check for negative weight cycles (negative cycle means no shortest path (can always just take the cycle)
+        if (errBuilder.Length > 0) throw new InvalidOperationException(errBuilder.ToString());
         
         return (dist, prev);
     }
@@ -66,6 +90,7 @@ public class SingleSourceShortestPaths
         // set the prev of the source to itself
         prev[source] = source;
         
+        // dont really need a hashset for a done set, since processing n^2 nodes in the worst case will still be O(ln(n^2)) = O(ln(n))
         HashSet<int> done = new();
         PriorityQueue<int, double> unvisited = new();
 

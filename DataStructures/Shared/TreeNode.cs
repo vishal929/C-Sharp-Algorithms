@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DataStructures.Shared;
 
-public class TreeNode<T> where T : IComparable<T>
+public class TreeNode<T>
 {
     public TreeNode<T>?[] Children { get; init; }
 

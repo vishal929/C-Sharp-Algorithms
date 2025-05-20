@@ -21,13 +21,16 @@ public class TopologicalSort
         IList<int> topSort = new List<int>();
 
         Stack<int> s = new();
-        Dictionary<int, int> numVisited = new();
-
+        HashSet<int> visited = new();
+        
         for (int i = 0; i < adjList.Count; i++)
         {
-            if (numVisited.ContainsKey(i)) continue;
+            if (visited.Contains(i)) continue;
 
             s.Push(i);
+
+            Dictionary<int, int> numVisited = new();
+
 
             while (s.Count > 0)
             {
@@ -59,6 +62,9 @@ public class TopologicalSort
                 {
                     s.Push(neighbor);
                 }
+                
+                // dont want to consider this in other DFS calls
+                visited.Add(node);
 
             }
         }

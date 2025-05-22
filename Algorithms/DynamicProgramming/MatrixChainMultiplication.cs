@@ -15,5 +15,6 @@ public class MatrixChainMultiplication
     public (int[], int) MinimizeMultiplications(int[][] matrixDims)
     {
         // have matrix multiplication like mxp pxn to make an mxn matrix
+        return (new int[3], 3);
     }
 }

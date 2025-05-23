@@ -1,72 +1,77 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace DataStructures.Graphs;
 public class TopologicalSort
 {
-    public IList<int> TopSort(IList<IList<int>> adjList)
+    public static IList<int> TopSort(IList<IList<int>> adjList)
     {
         // directed acyclic graph 
 
         // given a list of nodes, we want to return an ordering of nodes s.t the i-th node in the list does not have a dependency on any node after i
         // in other words, all the nodes that point to the i-th node must have already been completed
 
-        // so we do DFS, when we visit the node, we prepend the node to the list during backtracking
-        // this ensures that when we visit a node, the dependencies have already been prepended to the list
+        // we continually find the node with the least indegree, and add that to the list
 
         // O(V+E) taking O(V) space
-        IList<int> topSort = new List<int>();
+        int[] topSort = new int[adjList.Count];
+        int topSortIdx = 0;
 
-        Stack<int> s = new();
-        HashSet<int> visited = new();
+        Dictionary<int, int> inDegree = new();
         
+        // O(E)
         for (int i = 0; i < adjList.Count; i++)
         {
-            if (visited.Contains(i)) continue;
-
-            s.Push(i);
-
-            Dictionary<int, int> numVisited = new();
-
-
-            while (s.Count > 0)
+            for (int j = 0; j < adjList[i].Count; j++)
             {
-                int node = s.Pop();
-
-                if (numVisited.ContainsKey(node))
+                if (!inDegree.ContainsKey(adjList[i][j]))
                 {
-                    // backtrack, but if the stack expansion was not finalized, need to report a cycle
-                    if (numVisited[node] > 1)
-                    {
-                        // visited again,
-                        throw new InvalidOperationException("DAG has a cycle!");
-                    }
-                    else
-                    {
-                        // this is the second time we are visiting the node, add it to the list
-                        topSort.Add(node);
-                        numVisited[node]++;
-                        continue;
-                    }
-
+                    inDegree[adjList[i][j]] = 1;
                 }
-
-                // add back to stack and expand neighbors
-                s.Push(node);
-                numVisited[node]=1;
-
-                foreach (int neighbor in adjList[node])
+                else
                 {
-                    s.Push(neighbor);
+                    inDegree[adjList[i][j]]++;
                 }
-                
-                // dont want to consider this in other DFS calls
-                visited.Add(node);
-
             }
+        }
+
+        Stack<int> sources = new();
+
+        for (int i = 0; i < adjList.Count; i++)
+        {
+            if (!inDegree.ContainsKey(i))
+            {
+                // no indegree
+                sources.Push(i);
+            }
+        }
+
+        while (sources.Count > 0)
+        {
+            int source = sources.Pop();
+
+            topSort[topSortIdx] = source;
+            topSortIdx++;
+
+            for (int i = 0; i < adjList[source].Count; i++)
+            {
+                inDegree[adjList[source][i]]--;
+                if (inDegree[adjList[source][i]] == 0)
+                {
+                    // add this to the list of sinks
+                    sources.Push(adjList[source][i]);
+                }
+            }
+        }
+
+        // if our topSort length is not the same length as our adjList we have a cycle
+        if (topSortIdx!=adjList.Count)
+        {
+            throw new InvalidOperationException("Provided graph has a cycle!");
         }
 
         return topSort;

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace DataStructures.Graphs;
 public class SingleSourceShortestPaths
 {
-    public (double[] Dist,int[] Prev) BellmanFord<T>(IList<IList<int>> adjList, IList<IList<double>> weights, int source)
+    public static (double[] Dist,int[] Prev) BellmanFord(List<List<int>> adjList, List<List<double>> weights, int source)
     {
         // idea is that from a source, instead of getting the smallest distance vertex and updating based on edges,
         // we just update on all edges, v-1 times.
@@ -80,8 +80,8 @@ public class SingleSourceShortestPaths
         return (dist, prev);
     }
 
-    public (double[] Dist,int[] Prev) 
-        Dijkstra<T>(IList<IList<int>> adjList, IList<IList<double>> weights, int source)
+    public static (double[] Dist,int[] Prev) 
+        Dijkstra(List<List<int>> adjList, List<List<double>> weights, int source)
     {
         // dijkstras maintains a priority queue of edges that we could take
         double[] dist = new double[adjList.Count];
@@ -121,7 +121,7 @@ public class SingleSourceShortestPaths
             {
                 int neighbor = edges[i];
 
-                double weight = weights[node][neighbor];
+                double weight = weights[node][i];
                 if (done.Contains(neighbor)) continue;
                 double altDist = dist[node] + weight;
                 if (altDist < dist[neighbor])

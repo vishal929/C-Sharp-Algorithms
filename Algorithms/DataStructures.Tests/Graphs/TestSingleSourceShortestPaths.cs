@@ -32,11 +32,52 @@ public class TestSingleSourceShortestPaths
         (adj, weights) = BuildGraphNegativeCycle();
 
         Assert.Throws<InvalidOperationException>(() => SingleSourceShortestPaths.BellmanFord(adj, weights, 0));
+
+        (adj, weights) = BuildGraphNegativeWeight();
+
+        // start from 1 as our source in the grpah with negative weights
+        (dist, prev) = SingleSourceShortestPaths.BellmanFord(adj, weights, 1);
+
+        RunAssertionsNegativeGraph(dist, prev);
+
     }
 
     private (List<List<int>> Adj, List<List<double>> weights) BuildGraphNegativeWeight()
     {
-        return (null, null);
+        List<List<int>> adj = new List<List<int>>();
+        List<List<double>> weights = new List<List<double>>();
+        for (int i = 0; i < 5; i++)
+        {
+            adj.Add(new List<int>());
+            weights.Add(new List<double>());
+        }
+
+        // directed graph with negative edges
+        adj[0].Add(2);
+        weights[0].Add(5);
+        adj[0].Add(3);
+        weights[0].Add(4);
+
+        adj[1].Add(0);
+        weights[1].Add(4);
+        adj[1].Add(3);
+        weights[1].Add(7);
+        adj[1].Add(2);
+        weights[1].Add(3);
+
+        adj[2].Add(3);
+        weights[2].Add(3);
+        adj[2].Add(4);
+        weights[2].Add(2);
+
+        adj[3].Add(0);
+        weights[3].Add(-3);
+
+        adj[4].Add(3);
+        weights[4].Add(-4);
+
+        return (adj, weights);
+
     }
 
     private (List<List<int>> Adj, List<List<double>> weights) BuildGraphNegativeCycle()
@@ -141,6 +182,35 @@ public class TestSingleSourceShortestPaths
 
     }
 
+    private void RunAssertionsNegativeGraph(double[] dist, int[] prev)
+    {
+        // assert our distances from idx 1
+        Assert.Equal(0, dist[1], 0.001);
+        Assert.Equal(-2, dist[0], 0.001);
+        Assert.Equal(3, dist[2], 0.001);
+        Assert.Equal(1, dist[3], 0.001);
+        Assert.Equal(5, dist[4], 0.001);
+
+        // build a sample path
+        // get a shortest path using prev
+        int last = 3;
+        List<int> shortPath = new();
+        shortPath.Add(last);
+        while (last != 1)
+        {
+            last = prev[last];
+            shortPath.Add(last);
+        }
+
+        shortPath.Reverse();
+
+        Assert.Equal(1, shortPath[0]);
+        Assert.Equal(2, shortPath[1]);
+        Assert.Equal(4, shortPath[2]);
+        Assert.Equal(3, shortPath[3]);
+    }
+
+
     private void RunAssertionsPositiveGraph(double[] dist, int[] prev)
     {
         // assert our distances from 0
@@ -168,15 +238,5 @@ public class TestSingleSourceShortestPaths
         Assert.Equal(1, shortPath[1]);
         Assert.Equal(3, shortPath[2]);
         Assert.Equal(4, shortPath[3]);
-
-        // assert our distances from 0
-        Assert.Equal(0, dist[0],0.001);
-        Assert.Equal(2, dist[1],0.001);
-        Assert.Equal(6, dist[2], 0.001);
-        Assert.Equal(7, dist[3], 0.001);
-        Assert.Equal(17, dist[4], 0.001);
-        Assert.Equal(22, dist[5], 0.001);
-        Assert.Equal(19, dist[6], 0.001);
-
     }
 }

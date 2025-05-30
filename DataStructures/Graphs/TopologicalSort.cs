@@ -15,7 +15,7 @@ public class TopologicalSort
         // given a list of nodes, we want to return an ordering of nodes s.t the i-th node in the list does not have a dependency on any node after i
         // in other words, all the nodes that point to the i-th node must have already been completed
 
-        // we continually find the node with the least indegree, and add that to the list
+        // we continually find the "source" nodes (no indegree), and add that to the list
 
         // O(V+E) taking O(V) space
         int[] topSort = new int[adjList.Count];
@@ -23,7 +23,7 @@ public class TopologicalSort
 
         Dictionary<int, int> inDegree = new();
         
-        // O(E)
+        // O(E) just getting indegree of each node
         for (int i = 0; i < adjList.Count; i++)
         {
             for (int j = 0; j < adjList[i].Count; j++)

@@ -13,6 +13,8 @@ public class MaxFlow
         (List<List<int>> adj, List<List<int>> capacities, int source, int sink)
     {
         // using BFS, we can get the max flow using the ford fulkerson template in O(VE^2) time
+        // proof is complicated but basically with a shortest augmenting path, we ensure that the distance of the augmenting
+        // flows increases monotonically, so we have E iterations where each of the edges can be critical at most V/2 times --> O(VE^2)
         return FordFulkersonTemplate(adj, capacities, BFSHelper, source, sink); 
     }
 

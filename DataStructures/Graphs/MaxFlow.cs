@@ -8,13 +8,22 @@ namespace DataStructures.Graphs;
 public class MaxFlow 
 {
     
-
+    
+    /// <summary>
+    /// Runs the edmonds karp max flow algorithm
+    /// </summary>
+    /// <param name="adj">adjacency list</param>
+    /// <param name="capacities">capacities based on indices in the adjacency list</param>
+    /// <param name="source">source node</param>
+    /// <param name="sink">sink node</param>
+    /// <returns>the total flow value and the list of flows based on the indices in the adjacency list</returns>
     public static (int TotalFlow, List<List<int>> Flows) EdmondsKarp
         (List<List<int>> adj, List<List<int>> capacities, int source, int sink)
     {
         // using BFS, we can get the max flow using the ford fulkerson template in O(VE^2) time
         // proof is complicated but basically with a shortest augmenting path, we ensure that the distance of the augmenting
-        // flows increases monotonically, so we have E iterations where each of the edges can be critical at most V/2 times --> O(VE^2)
+        // flows increases monotonically, so we have E iterations where each of the edges can be critical at most V/2 times --> O(VE)
+        // so combining with the ford fulkerson template, we have O(VE^2)
         return FordFulkersonTemplate(adj, capacities, BFSHelper, source, sink); 
     }
 
@@ -44,15 +53,29 @@ public class MaxFlow
         List<List<int>> residual = capacities.Select(x => x.ToList()).ToList();
         List<List<int>> residualAdj = adj.Select(x => x.ToList()).ToList();
 
-        // for each directed edge from u to v, add an edge from v to u with 0 flow
+        // for each directed edge from u to v, add an edge from v to u with 0 flow (if there is already the opposite edge, dont add it)
         // O(E)
         for (int i = 0; i < residualAdj.Count; i++)
         {
             for (int j=0;j< residualAdj[i].Count; j++)
             {
                 int v = residualAdj[i][j];
-                residualAdj[v].Add(i);
-                residual[v].Add(0);
+                // add only if the reverse doesnt already exist
+                bool reverseExists = false;
+                for (int z = 0; z < residualAdj[v].Count; z++)
+                {
+                    if (residualAdj[v][z] == i)
+                    {
+                        reverseExists = true;
+                        break;
+                    }
+                }
+                if (!reverseExists)
+                {
+                    residualAdj[v].Add(i);
+                    residual[v].Add(0);
+                }
+                
             }
         }
 
@@ -91,6 +114,9 @@ public class MaxFlow
 
                 // send flow along u to v
                 flows[u][vIdx] += smallest;
+
+                // find a new augmenting path
+                augmentingPath = augmenting(residualAdj, residual, source, sink);
             }
         }
 
@@ -105,14 +131,18 @@ public class MaxFlow
         return (maxFlow, flows);
     }
 
-    private static List<(int,int)> BFSHelper(List<List<int>> residualAdj,List<List<int>> residual,int source,int sink)
+    private static List<(int,int)>? BFSHelper(List<List<int>> residualAdj,List<List<int>> residual,int source,int sink)
     {
         // use BFS to find a shortest non-zero flow from source to sink in the residual graph (O(V+E))
+        // want to support bidirectional graphs, so maintain a "seen" set
+        HashSet<int> seen = new();
         Queue<int> q = new();
         q.Enqueue(source);
 
         int[] pred = new int[residualAdj.Count];
         pred[source] = source;
+
+        bool pathFound = false;
 
         while (q.Count > 0)
         {
@@ -121,19 +151,25 @@ public class MaxFlow
             if (node == sink)
             {
                 // got a shortest path to our sink, just break
+                pathFound = true;
                 break;
             }
             
             for (int i = 0; i < residualAdj[node].Count; i++)
             {
-                if (residual[node][i] != 0)
+                if (residual[node][i] > 0 && !seen.Contains(residualAdj[node][i]))
                 {
                     // possible neighbor
-                    pred[residual[node][i]] = node;
-                    q.Enqueue(residual[node][i]);
+                    pred[residualAdj[node][i]] = node;
+                    q.Enqueue(residualAdj[node][i]);
+                    seen.Add(residualAdj[node][i]);
                 }
             }
+            seen.Add(node);
         }
+        
+        // indicate no augmenting path exists
+        if (!pathFound) return null;
 
         // build our edges using pred
         List<(int, int)> edges = new();
@@ -144,6 +180,8 @@ public class MaxFlow
             order.Add(item);
             item = pred[item];
         }
+        // add the sink
+        order.Add(item);
 
         order.Reverse();
 

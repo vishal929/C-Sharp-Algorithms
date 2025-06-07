@@ -4,18 +4,18 @@ namespace DataStructures.DisjointSets;
 public class DisjointSet
 {
 
-    public DisjointSetNode<T> MakeSet<T>(T item)
+    public static DisjointSetNode<T> MakeSet<T>(T item)
     {
         return new DisjointSetNode<T>(item);
 
     }
 
-    public void Union<T>(DisjointSetNode<T> first, DisjointSetNode<T> second)
+    public static void Union<T>(DisjointSetNode<T> first, DisjointSetNode<T> second)
     {
         Link(FindSet<T>(first), FindSet<T>(second)); 
     }
 
-    public DisjointSetNode<T> FindSet<T>(DisjointSetNode<T> item)
+    public static DisjointSetNode<T> FindSet<T>(DisjointSetNode<T> item)
     {
         if (item != item.Parent)
         {
@@ -25,7 +25,7 @@ public class DisjointSet
         return item.Parent;
     }
 
-    private void Link<T>(DisjointSetNode<T> first, DisjointSetNode<T> second)
+    private static void Link<T>(DisjointSetNode<T> first, DisjointSetNode<T> second)
     {
         if (first.Rank > second.Rank)
         {

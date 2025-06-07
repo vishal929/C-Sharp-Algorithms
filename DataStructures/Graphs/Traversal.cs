@@ -8,19 +8,21 @@ using System.Threading.Tasks;
 namespace DataStructures.Graphs;
 public class Traversal
 {
-    public static void DFS(IList<IList<int>> adjList, Action<int> visitAction, Action<int> alreadyVisitedAction)
+    public static void DFS(List<List<int>> adjList, Action<int> preTraversalAction,  Action<int> visitAction, Action<int> alreadyVisitedAction)
     {
         HashSet<int> visited = new();
         for (int i = 0; i < adjList.Count(); i++)
         {
             if (visited.Contains(i)) continue;
 
+            preTraversalAction(i);
+
             // run DFS
             DFSHelper(i,adjList,visited, visitAction, alreadyVisitedAction);
         }
     }
 
-    private static void DFSHelper(int source, IList<IList<int>> adjList, HashSet<int> visited, Action<int> visitAction, Action<int> alreadyVisitedAction)
+    private static void DFSHelper(int source, List<List<int>> adjList, HashSet<int> visited, Action<int> visitAction, Action<int> alreadyVisitedAction)
     {
         Stack<int> s = new();
         s.Push(source);
@@ -48,19 +50,21 @@ public class Traversal
         }
     }
 
-    public static void BFS<T>(IList<IList<int>> adjList, Action<int> visitAction, Action<int> alreadyVisitedAction)
+    public static void BFS<T>(List<List<int>> adjList, Action<int> preTraversalAction, Action<int> visitAction, Action<int> alreadyVisitedAction)
     {
         HashSet<int> visited = new();
         for (int i = 0; i < adjList.Count(); i++)
         {
             if (visited.Contains(i)) continue;
 
+            preTraversalAction(i);
+
             // run BFS
             BFSHelper(i,adjList, visited, visitAction, alreadyVisitedAction);
         }
     }
 
-    private static void BFSHelper(int source, IList<IList<int>> adjList, HashSet<int> visited, Action<int> visitAction, Action<int> alreadyVisitedAction)
+    private static void BFSHelper(int source, List<List<int>> adjList, HashSet<int> visited, Action<int> visitAction, Action<int> alreadyVisitedAction)
     {
         Queue<int> q = new();
         q.Enqueue(source);

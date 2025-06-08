@@ -149,9 +149,59 @@ public class MinimumSpanningTree
     }
 
 
-    public static void Prim(List<List<int>> adj, List<List<int>> weights)
+    public static List<List<int>> Prim(List<List<int>> adj, List<List<int>> weights)
     {
-        
+        List<List<int>> forestAdj = new();
+        foreach (var list in adj) forestAdj.Add(new List<int>());
+
+        // initialize a tree with 1 vertex
+        // grow the tree by 1 edge with the smallest edge going to a vertex not already in the tree
+        // repeat until all vertices covered
+
+        (int Source, int Dest, int Weight)?[] cheapestEdges = new (int, int, int)?[adj.Count];
+
+        bool[] explored = new bool[adj.Count];
+
+        // create a priority queue of vertices and their min distances encountered so far
+        PriorityQueue<int, int> vHeap = new();
+
+        // choose the first vertex to start from
+        vHeap.Enqueue(0, 0); 
+
+        for (int i = 1; i < adj.Count; i++)
+        {
+            vHeap.Enqueue(1, int.MaxValue);
+        }
+
+        while(vHeap.Count > 0)
+        {
+            int node = vHeap.Dequeue();
+
+            if (explored[node]) continue;
+
+            explored[node] = true;
+
+            for (int i = 0; i < adj[node].Count; i++)
+            {
+                int neighbor = adj[node][i];
+
+                if (!explored[neighbor] && (cheapestEdges[neighbor] == null || cheapestEdges[neighbor]!.Value.Weight > weights[node][i]))
+                {
+                    cheapestEdges[neighbor] = (node, neighbor, weights[node][i]);
+                }
+            }
+        }
+
+        foreach((int Source, int Dest, int Weight)? item in cheapestEdges)
+        {
+            if (item != null)
+            {
+                forestAdj[item.Value.Source].Add(item.Value.Dest);
+                forestAdj[item.Value.Dest].Add(item.Value.Source);
+            }
+        }
+
+        return forestAdj;
     }
 
     private static List<List<int>> GetConnectedComponents(List<List<int>> adj)

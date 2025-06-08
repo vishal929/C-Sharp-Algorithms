@@ -17,6 +17,9 @@ public class MinimumSpanningTree
         List<List<int>> forestAdj = new List<List<int>>();
         foreach (var list in adj) forestAdj.Add(new List<int>());
 
+        // dont want to add edges multiple times 
+        HashSet<(int, int)> edgesAdded = new(); 
+
         while (true)
         {
             List<List<int>> connectedComponents = GetConnectedComponents(forestAdj);
@@ -35,10 +38,12 @@ public class MinimumSpanningTree
             }
 
             // go through all the edges, see which edges map to different components
+            // we dont want to count edges twice, so only consider edges where i<adj[i][j]
             for (int i = 0; i < adj.Count; i++)
             {
                 for (int j = 0; j < adj[i].Count; j++)
                 {
+                    if (i >= adj[i][j]) continue;
                     if (vertexComponentMapping[i] != vertexComponentMapping[adj[i][j]])
                     {
                         // this edge spans across components
@@ -48,23 +53,23 @@ public class MinimumSpanningTree
                         // think 3 vertices a,b,c with edge weights of all 1
 
                         int uComponent = vertexComponentMapping[i];
-                        int vComponent = vertexComponentMapping[j];
+                        int vComponent = vertexComponentMapping[adj[i][j]];
 
                         int currEdgeWeight = weights[i][j];
 
-                        (int Source, int Dest)? uChosenBest = bestEdge[uComponent];
-                        (int Source, int Dest)? vChosenBest = bestEdge[vComponent];
+                        (int Source, int DestIdx)? uChosenBest = bestEdge[uComponent];
+                        (int Source, int DestIdx)? vChosenBest = bestEdge[vComponent];
                         
                         if (uChosenBest is null || 
-                            weights[uChosenBest.Value.Source][uChosenBest.Value.Dest] > currEdgeWeight ||
-                            (weights[uChosenBest.Value.Source][uChosenBest.Value.Dest]==currEdgeWeight && (i < uChosenBest.Value.Source && j < uChosenBest.Value.Dest))
+                            weights[uChosenBest.Value.Source][uChosenBest.Value.DestIdx] > currEdgeWeight ||
+                            (weights[uChosenBest.Value.Source][uChosenBest.Value.DestIdx]==currEdgeWeight && (i < uChosenBest.Value.Source && j < uChosenBest.Value.DestIdx)))
                         {
                             bestEdge[uComponent] = (i, j);
                         }
 
                         if (vChosenBest is null || 
-                            weights[vChosenBest.Value.Source][vChosenBest.Value.Dest] > currEdgeWeight ||
-                            (weights[vChosenBest.Value.Source][vChosenBest.Value.Dest]==currEdgeWeight && (i < vChosenBest.Value.Source && j < vChosenBest.Value.Dest))
+                            weights[vChosenBest.Value.Source][vChosenBest.Value.DestIdx] > currEdgeWeight ||
+                            (weights[vChosenBest.Value.Source][vChosenBest.Value.DestIdx]==currEdgeWeight && (i < vChosenBest.Value.Source && j < vChosenBest.Value.DestIdx)))
                         {
                             bestEdge[vComponent] = (i, j);
                         }
@@ -74,19 +79,20 @@ public class MinimumSpanningTree
 
             // add the best edges to the forest
             bool areEdgesAdded = false;
-            HashSet<(int, int)> edgesAdded = new(); 
             for (int i = 0; i < bestEdge.Length; i++)
             {
-                (int, int)? edge = bestEdge[i];
+                (int Source, int DestIdx)? edge = bestEdge[i];
                 if (edge is null) continue;
 
-                int source = Math.Min(edge.Value.Item1, edge.Value.Item2);
-                int dest = Math.Max(edge.Value.Item1, edge.Value.Item2);
+                int source = Math.Min(edge.Value.Source, adj[edge.Value.Source][edge.Value.DestIdx]);
+                int dest = Math.Max(edge.Value.Source, adj[edge.Value.Source][edge.Value.DestIdx]);
 
                 if (edgesAdded.Contains((source, dest))) continue;
 
                 forestAdj[source].Add(dest);
                 forestAdj[dest].Add(source);
+                areEdgesAdded = true;
+                edgesAdded.Add((source, dest));
 
             }
 
@@ -188,6 +194,7 @@ public class MinimumSpanningTree
                 if (!explored[neighbor] && (cheapestEdges[neighbor] == null || cheapestEdges[neighbor]!.Value.Weight > weights[node][i]))
                 {
                     cheapestEdges[neighbor] = (node, neighbor, weights[node][i]);
+                    vHeap.Enqueue(neighbor, weights[node][i]);
                 }
             }
         }
